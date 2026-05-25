@@ -1,0 +1,114 @@
+{
+  "roles": ["DS", "CL", "AU", "DPO", "ADM"],
+  "usages": ["clinical_research", "ASD_model_development", "privacy_management"],
+  "erasures": ["delete_on_request", "retention_5y", "protect_linkage_key", "retrain_or_review_on_erasure", "recompute_on_erasure"],
+  "category_implications": {
+    "biometric": ["sensitive_personal_data"],
+    "health": ["sensitive_personal_data"],
+    "behavioural_sensitive": ["sensitive_personal_data"],
+    "direct_identifier": ["identifier"],
+    "pseudonymous_identifier": ["identifier"],
+    "temporal_quasi_identifier": ["quasi_identifier"],
+    "organisational_context": ["quasi_identifier"]
+  },
+  "dataset_annotations": {
+    "D6_EnrichedEpisodeData": {
+      "C": [
+        "direct_identifier",
+        "temporal_quasi_identifier",
+        "quasi_identifier",
+        "biometric",
+        "health",
+        "behavioural_sensor_data",
+        "behavioural_sensitive",
+        "organisational_context",
+        "reidentification_risk"
+      ],
+      "U": ["clinical_research"],
+      "R": ["delete_on_request", "retention_5y"],
+      "A": ["CL", "DPO"],
+      "granularity": "dataset",
+      "source": "manual",
+      "note": "Manual seed annotation for the context-enriched episode dataset used as the input to the instrumented workflow."
+    }
+  },
+  "record_default_annotations": {
+    "D6_EnrichedEpisodeData": {
+      "U": ["clinical_research"],
+      "R": ["delete_on_request", "retention_5y"],
+      "A": ["CL", "DPO"],
+      "granularity": "record",
+      "source": "manual"
+    }
+  },
+  "attribute_annotations": {
+    "D6_EnrichedEpisodeData": {
+      "Id": {
+        "C": ["direct_identifier"],
+        "A": ["CL", "DPO"],
+        "granularity": "cell",
+        "source": "manual"
+      },
+      "window_start": {
+        "C": ["temporal_quasi_identifier"],
+        "A": ["DS", "CL", "AU", "DPO"],
+        "granularity": "cell",
+        "source": "manual"
+      },
+      "HR_res": {
+        "C": ["biometric", "health"],
+        "A": ["DS", "CL", "AU", "DPO"],
+        "granularity": "cell",
+        "source": "manual"
+      },
+      "EDA_res": {
+        "C": ["biometric", "health"],
+        "A": ["DS", "CL", "AU", "DPO"],
+        "granularity": "cell",
+        "source": "manual"
+      },
+      "ACC_res": {
+        "C": ["behavioural_sensor_data"],
+        "A": ["DS", "CL", "AU", "DPO"],
+        "granularity": "cell",
+        "source": "manual"
+      },
+      "chall_behav": {
+        "C": ["health", "behavioural_sensitive"],
+        "A": ["DS", "CL", "AU", "DPO"],
+        "granularity": "cell",
+        "source": "manual"
+      },
+      "sev": {
+        "C": ["health", "behavioural_sensitive"],
+        "A": ["DS", "CL", "AU", "DPO"],
+        "granularity": "cell",
+        "source": "manual"
+      },
+      "age_grp": {
+        "C": ["quasi_identifier"],
+        "A": ["DS", "CL", "AU", "DPO"],
+        "granularity": "cell",
+        "source": "manual"
+      },
+      "sex": {
+        "C": ["quasi_identifier"],
+        "A": ["DS", "CL", "AU", "DPO"],
+        "granularity": "cell",
+        "source": "manual"
+      },
+      "clinic_site": {
+        "C": ["quasi_identifier", "organisational_context"],
+        "A": ["CL", "AU", "DPO"],
+        "granularity": "cell",
+        "source": "manual"
+      },
+      "diag": {
+        "C": ["health", "sensitive_personal_data"],
+        "A": ["CL", "AU", "DPO"],
+        "granularity": "cell",
+        "source": "manual"
+      }
+    }
+  }
+}

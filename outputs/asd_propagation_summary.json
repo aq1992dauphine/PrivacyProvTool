@@ -1,0 +1,197 @@
+{
+  "propagation_summary": {
+    "step_runs_processed": 4,
+    "annotations_created": 117,
+    "cell_annotations_created": 100,
+    "record_annotations_created": 12,
+    "dataset_annotations_created": 4,
+    "model_annotations_created": 1,
+    "skipped_step_runs": [],
+    "propagated_DataCellArtifact_annotations": 100,
+    "propagated_DataRecordArtifact_annotations": 12,
+    "propagated_DatasetArtifact_annotations": 4,
+    "propagated_ModelArtifact_annotations": 1,
+    "propagated_annotations_total": 117
+  },
+  "artifact_privacy_summary": {
+    "D7_NormalizedEpisodeData": {
+      "label": "DatasetArtifact",
+      "C": [
+        "direct_identifier",
+        "temporal_quasi_identifier",
+        "quasi_identifier",
+        "biometric",
+        "health",
+        "behavioural_sensor_data",
+        "behavioural_sensitive",
+        "organisational_context",
+        "reidentification_risk",
+        "sensitive_personal_data",
+        "identifier"
+      ],
+      "C_explicit": [
+        "direct_identifier",
+        "temporal_quasi_identifier",
+        "quasi_identifier",
+        "biometric",
+        "health",
+        "behavioural_sensor_data",
+        "behavioural_sensitive",
+        "organisational_context",
+        "reidentification_risk",
+        "sensitive_personal_data"
+      ],
+      "U": [
+        "clinical_research"
+      ],
+      "R": [
+        "delete_on_request",
+        "retention_5y"
+      ],
+      "A": [
+        "CL",
+        "DPO"
+      ],
+      "sources": [
+        "propagated:TR"
+      ]
+    },
+    "D8_ModellingDataset": {
+      "label": "DatasetArtifact",
+      "C": [
+        "biometric",
+        "health",
+        "behavioural_sensor_data",
+        "behavioural_sensitive",
+        "quasi_identifier",
+        "sensitive_personal_data"
+      ],
+      "C_explicit": [
+        "biometric",
+        "health",
+        "behavioural_sensor_data",
+        "behavioural_sensitive",
+        "quasi_identifier"
+      ],
+      "U": [
+        "clinical_research"
+      ],
+      "R": [
+        "delete_on_request",
+        "retention_5y"
+      ],
+      "A": [
+        "AU",
+        "CL",
+        "DPO",
+        "DS"
+      ],
+      "sources": [
+        "propagated:RED"
+      ]
+    },
+    "D9_TrainDataset": {
+      "label": "DatasetArtifact",
+      "C": [
+        "biometric",
+        "health",
+        "behavioural_sensor_data",
+        "behavioural_sensitive",
+        "quasi_identifier",
+        "sensitive_personal_data"
+      ],
+      "C_explicit": [
+        "biometric",
+        "health",
+        "behavioural_sensor_data",
+        "behavioural_sensitive",
+        "quasi_identifier"
+      ],
+      "U": [
+        "clinical_research"
+      ],
+      "R": [
+        "delete_on_request",
+        "retention_5y"
+      ],
+      "A": [
+        "AU",
+        "CL",
+        "DPO",
+        "DS"
+      ],
+      "sources": [
+        "propagated:RED"
+      ]
+    },
+    "D10_TestDataset": {
+      "label": "DatasetArtifact",
+      "C": [
+        "biometric",
+        "health",
+        "behavioural_sensor_data",
+        "behavioural_sensitive",
+        "quasi_identifier",
+        "sensitive_personal_data"
+      ],
+      "C_explicit": [
+        "biometric",
+        "health",
+        "behavioural_sensor_data",
+        "behavioural_sensitive",
+        "quasi_identifier"
+      ],
+      "U": [
+        "clinical_research"
+      ],
+      "R": [
+        "delete_on_request",
+        "retention_5y"
+      ],
+      "A": [
+        "AU",
+        "CL",
+        "DPO",
+        "DS"
+      ],
+      "sources": [
+        "propagated:RED"
+      ]
+    },
+    "M1_ChallengingBehaviourClassifier": {
+      "label": "ModelArtifact",
+      "C": [
+        "model_exposed_to_biometric_data",
+        "model_exposed_to_health_data",
+        "model_exposed_to_behavioural_sensor_data",
+        "model_exposed_to_behavioural_sensitive_label",
+        "model_exposed_to_quasi_identifier_features",
+        "small_training_set_model_disclosure_risk"
+      ],
+      "C_explicit": [
+        "model_exposed_to_biometric_data",
+        "model_exposed_to_health_data",
+        "model_exposed_to_behavioural_sensor_data",
+        "model_exposed_to_behavioural_sensitive_label",
+        "model_exposed_to_quasi_identifier_features",
+        "small_training_set_model_disclosure_risk"
+      ],
+      "U": [
+        "clinical_research"
+      ],
+      "R": [
+        "retrain_or_review_on_erasure",
+        "retention_5y"
+      ],
+      "A": [
+        "DS",
+        "CL",
+        "AU",
+        "DPO"
+      ],
+      "sources": [
+        "propagated:LEARN"
+      ]
+    }
+  }
+}

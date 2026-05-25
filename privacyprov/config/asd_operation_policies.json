@@ -1,0 +1,129 @@
+{
+  "operation_policies": {
+    "S5_normalise_policy": {
+      "step": "S5_normalise",
+      "operatorType": "TR",
+      "contributorGranularity": "cell",
+      "inputArtifacts": ["D6_EnrichedEpisodeData"],
+      "outputArtifacts": ["D7_NormalizedEpisodeData"],
+      "transformations": {
+        "HR_norm": {
+          "derivedFrom": ["HR_res"],
+          "preserveCategories": true,
+          "description": "Min-max normalisation preserves the biometric/health semantics of heart-rate values."
+        },
+        "EDA_norm": {
+          "derivedFrom": ["EDA_res"],
+          "preserveCategories": true,
+          "description": "Min-max normalisation preserves the biometric/health semantics of EDA values."
+        },
+        "ACC_norm": {
+          "derivedFrom": ["ACC_res"],
+          "preserveCategories": true,
+          "description": "Min-max normalisation preserves behavioural sensor-data semantics."
+        },
+        "Id": {
+          "derivedFrom": ["Id"],
+          "preserveCategories": true
+        },
+        "window_start": {
+          "derivedFrom": ["window_start"],
+          "preserveCategories": true
+        },
+        "chall_behav": {
+          "derivedFrom": ["chall_behav"],
+          "preserveCategories": true
+        },
+        "sev": {
+          "derivedFrom": ["sev"],
+          "preserveCategories": true
+        },
+        "age_grp": {
+          "derivedFrom": ["age_grp"],
+          "preserveCategories": true
+        },
+        "sex": {
+          "derivedFrom": ["sex"],
+          "preserveCategories": true
+        },
+        "clinic_site": {
+          "derivedFrom": ["clinic_site"],
+          "preserveCategories": true
+        },
+        "diag": {
+          "derivedFrom": ["diag"],
+          "preserveCategories": true
+        }
+      },
+      "globalParameters": {
+        "usesDatasetMinMax": true,
+        "erasureEffect": "recompute_if_minmax_changes",
+        "note": "This policy records the subtle cross-record dependency introduced when min/max parameters are fitted on the full dataset."
+      },
+      "note": "TR example: numeric values change scale, but privacy semantics of the retained attributes are preserved."
+    },
+    "S6_select_modelling_features_policy": {
+      "step": "S6_select_modelling_features",
+      "operatorType": "RED",
+      "contributorGranularity": "cell",
+      "inputArtifacts": ["D7_NormalizedEpisodeData"],
+      "outputArtifacts": ["D8_ModellingDataset"],
+      "selectedAttributes": ["HR_norm", "EDA_norm", "ACC_norm", "chall_behav", "sev", "age_grp", "sex"],
+      "removedAttributes": ["Id", "window_start", "clinic_site", "diag"],
+      "riskRemovalRules": [
+        {
+          "condition": "risk_causing_attributes_removed",
+          "removeCategories": ["direct_identifier", "temporal_quasi_identifier", "organisational_context", "reidentification_risk"],
+          "description": "Projection removes the main attributes that caused the prior dataset-level linkage risk; residual quasi-identifiers remain through age group and sex."
+        }
+      ],
+      "globalParameters": {
+        "recomputeAccessFromRetainedAttributes": true
+      },
+      "note": "RED/projection example: output annotation should be computed from retained attributes rather than copied from the whole input dataset."
+    },
+    "S7_split_train_test_policy": {
+      "step": "S7_split_train_test",
+      "operatorType": "RED",
+      "contributorGranularity": "record",
+      "inputArtifacts": ["D8_ModellingDataset"],
+      "outputArtifacts": ["D9_TrainDataset", "D10_TestDataset"],
+      "globalParameters": {
+        "splitType": "subject_aware_toy_split",
+        "trainRecordSelector": "first_two_rows",
+        "testRecordSelector": "last_two_rows",
+        "attenuationApplies": false
+      },
+      "note": "RED/split example: train and test datasets inherit annotations from the records assigned to each partition."
+    },
+    "S8_train_classifier_policy": {
+      "step": "S8_train_classifier",
+      "operatorType": "LEARN",
+      "contributorGranularity": "record_and_attribute",
+      "inputArtifacts": ["D9_TrainDataset"],
+      "outputArtifacts": ["M1_ChallengingBehaviourClassifier"],
+      "target": "chall_behav",
+      "features": ["HR_norm", "EDA_norm", "ACC_norm", "age_grp", "sex"],
+      "excludedAttributes": ["sev"],
+      "modelExposureMapping": {
+        "biometric": "model_exposed_to_biometric_data",
+        "health": "model_exposed_to_health_data",
+        "behavioural_sensor_data": "model_exposed_to_behavioural_sensor_data",
+        "behavioural_sensitive": "model_exposed_to_behavioural_sensitive_label",
+        "quasi_identifier": "model_exposed_to_quasi_identifier_features"
+      },
+      "erasureRewrite": {
+        "delete_on_request": "retrain_or_review_on_erasure"
+      },
+      "mintingRules": [
+        {
+          "condition": "training_set_size_less_than_10",
+          "addCategories": ["small_training_set_model_disclosure_risk"],
+          "description": "Toy model is trained on two records; this rule demonstrates model-specific risk minting."
+        }
+      ],
+      "modelAccessRoles": ["DS", "CL", "AU", "DPO"],
+      "note": "LEARN example: input data categories are rewritten into model-exposure categories, and deletion obligations become retraining/review obligations."
+    }
+  }
+}
