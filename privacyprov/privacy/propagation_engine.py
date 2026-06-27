@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import fnmatch
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Set, Tuple
 import re
 
@@ -191,6 +192,12 @@ class PrivacyPropagationEngine:
             for out_cell in self._cells_for_dataset(output_ds.key):
                 out_attr = str(out_cell.props.get("attribute"))
                 transform = policy.transformations.get(out_attr)
+                if transform is None:
+                    # Support wildcard transformation policies such as education_* -> education.
+                    for pattern, spec in policy.transformations.items():
+                        if fnmatch.fnmatch(out_attr, str(pattern)):
+                            transform = spec
+                            break
                 if transform:
                     source_attrs = [str(a) for a in transform.get("derivedFrom", [])]
                 else:
@@ -346,7 +353,20 @@ class PrivacyPropagationEngine:
         input_ds = inputs[0]
 
         # Select only the features and target used by the learning step.
-        used_attrs = _unique(list(policy.features) + ([policy.target] if policy.target else []))
+        # A wildcard feature list means: all available attributes except explicitly
+        # excluded attributes and the target label. This is useful for dataframe
+        # pipelines with dynamic one-hot-encoded columns.
+        excluded = set(str(a) for a in policy.excludedAttributes)
+        if "*" in policy.features and input_ds.label == "DatasetArtifact":
+            feature_attrs = sorted({
+                str(cell.props.get("attribute"))
+                for cell in self._cells_for_dataset(input_ds.key)
+                if str(cell.props.get("attribute")) not in excluded
+                and str(cell.props.get("attribute")) != str(policy.target)
+            })
+        else:
+            feature_attrs = [str(a) for a in policy.features if str(a) not in excluded]
+        used_attrs = _unique(feature_attrs + ([policy.target] if policy.target else []))
         contributor_cells: List[Node] = []
         if input_ds.label == "DatasetArtifact" and used_attrs:
             for cell in self._cells_for_dataset(input_ds.key):
@@ -398,6 +418,7 @@ class PrivacyPropagationEngine:
                 policy=policy,
                 note="LEARN propagation using model-exposure category mapping.",
             )
+
 
     def _propagate_generic(self, step_run: Node, policy: OperationPolicySpec) -> None:
         inputs = self._input_artifacts(step_run, policy)

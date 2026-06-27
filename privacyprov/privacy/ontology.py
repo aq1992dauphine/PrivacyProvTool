@@ -10,12 +10,12 @@ class PrivacyOntology: # it stores category implicaiton rules
     def __init__(self, implications: Dict[str, Iterable[str]] | None = None) -> None:
         self.implications: Dict[str, Set[str]] = defaultdict(set)
         for source, targets in (implications or {}).items():
-            self.implications[str(source)].update(str(t) for t in targets)
+            self.implications[str(source)].update(str(t) for t in targets) # 
 
     def add_implication(self, source: str, target: str) -> None:
         self.implications[str(source)].add(str(target))
 
-    def categories(self) -> Set[str]:
+    def categories(self) -> Set[str]: # return al the cateoriws known by the ontology, both source abd target categories, this will be useful when we want to understand the full set of sensitivity categories that are defined in the ontology, and it will also help us to understand how these categories are related to each other based on the implication rules defined in the ontology.
         cats: Set[str] = set(self.implications.keys())
         for targets in self.implications.values():
             cats.update(targets)
@@ -34,7 +34,7 @@ class PrivacyOntology: # it stores category implicaiton rules
 
         while queue:
             current = queue.popleft()
-            for implied in sorted(self.implications.get(current, [])):
+            for implied in sorted(self.implications.get(current, [])): # find categories implied by the current one
                 if implied not in seen:
                     seen.add(implied)
                     ordered.append(implied)

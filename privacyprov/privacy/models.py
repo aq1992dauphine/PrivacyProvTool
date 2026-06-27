@@ -83,12 +83,12 @@ class PrivacyConfig:
     erasures: List[str] = field(default_factory=list)
     category_implications: Dict[str, List[str]] = field(default_factory=dict)
     dataset_annotations: Dict[str, AnnotationSpec] = field(default_factory=dict)
-    record_default_annotations: Dict[str, AnnotationSpec] = field(default_factory=dict)
-    attribute_annotations: Dict[str, Dict[str, AnnotationSpec]] = field(default_factory=dict)
-    raw: Dict[str, Any] = field(default_factory=dict)
+    record_default_annotations: Dict[str, AnnotationSpec] = field(default_factory=dict) # this is a dictionary where the key is the dataset id and the value is the default annotation spec for the records in that dataset, this will allow us to specify default annotations for all records in a dataset, and it will also allow us to track the propagation of these annotations in the workflow based on the dataset level.
+    attribute_annotations: Dict[str, Dict[str, AnnotationSpec]] = field(default_factory=dict) # this is a nested dictionary where the first key is the dataset id, the second key is the attribute name, and the value is the AnnotationSpec for that attribute in that dataset, this will allow us to specify different annotations for the same attribute in different datasets, and it will also allow us to track the propagation of these annotations in the workflow based on the dataset and attribute level.
+    raw: Dict[str, Any] = field(default_factory=dict) # keeps the original loaded config dictionary for reference, this can be useful for debugging and for understanding the original structure of the input configuration, especially if we want to compare the loaded configuration with the original JSON/YAML file or if we want to access any additional fields that are not explicitly defined in the PrivacyConfig class.
 
     @classmethod
-    def from_mapping(cls, data: Mapping[str, Any]) -> "PrivacyConfig":
+    def from_mapping(cls, data: Mapping[str, Any]) -> "PrivacyConfig": # converts the raw json/yaml dictionary into a structred PrivacyConfig object
         dataset_annotations = {
             str(k): AnnotationSpec.from_mapping(v, default_granularity="dataset")
             for k, v in data.get("dataset_annotations", {}).items()

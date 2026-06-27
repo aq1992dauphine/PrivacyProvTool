@@ -1,0 +1,212 @@
+{
+  "operation_policies": {
+    "A0_value_translation_policy": {
+      "operatorType": "TR",
+      "contributorGranularity": "cell",
+      "transformations": {},
+      "step": "A0_value_translation",
+      "inputArtifacts": [
+        "D0_GermanRaw"
+      ],
+      "outputArtifacts": [
+        "D1_GermanTranslated"
+      ]
+    },
+    "A1_derive_status_gender_policy": {
+      "operatorType": "TR",
+      "contributorGranularity": "cell",
+      "transformations": {
+        "status": {
+          "derivedFrom": [
+            "personal_status"
+          ],
+          "preserveCategories": true
+        },
+        "gender": {
+          "derivedFrom": [
+            "personal_status"
+          ],
+          "preserveCategories": true
+        }
+      },
+      "step": "A1_derive_status_gender",
+      "inputArtifacts": [
+        "D1_GermanTranslated"
+      ],
+      "outputArtifacts": [
+        "D2_GermanStatusGender"
+      ]
+    },
+    "A2_drop_personal_status_policy": {
+      "operatorType": "RED",
+      "contributorGranularity": "cell",
+      "step": "A2_drop_personal_status",
+      "inputArtifacts": [
+        "D2_GermanStatusGender"
+      ],
+      "outputArtifacts": [
+        "D3_GermanNoPersonalStatus"
+      ],
+      "riskRemovalRules": [
+        {
+          "condition": "projection_or_attribute_removal",
+          "removeCategories": [
+            "personal_status"
+          ],
+          "description": "Converted from top-level removeCategories for the real PrivacyProv policy schema."
+        }
+      ]
+    },
+    "A3_one_hot_encode_policy": {
+      "operatorType": "TR",
+      "contributorGranularity": "cell",
+      "transformations": {
+        "checking_*": {
+          "derivedFrom": [
+            "checking"
+          ],
+          "preserveCategories": true
+        },
+        "credit_history_*": {
+          "derivedFrom": [
+            "credit_history"
+          ],
+          "preserveCategories": true
+        },
+        "purpose_*": {
+          "derivedFrom": [
+            "purpose"
+          ],
+          "preserveCategories": true
+        },
+        "savings_*": {
+          "derivedFrom": [
+            "savings"
+          ],
+          "preserveCategories": true
+        },
+        "employment_*": {
+          "derivedFrom": [
+            "employment"
+          ],
+          "preserveCategories": true
+        },
+        "other_debtors_*": {
+          "derivedFrom": [
+            "other_debtors"
+          ],
+          "preserveCategories": true
+        },
+        "property_*": {
+          "derivedFrom": [
+            "property"
+          ],
+          "preserveCategories": true
+        },
+        "other_inst_*": {
+          "derivedFrom": [
+            "other_inst"
+          ],
+          "preserveCategories": true
+        },
+        "housing_*": {
+          "derivedFrom": [
+            "housing"
+          ],
+          "preserveCategories": true
+        },
+        "job_*": {
+          "derivedFrom": [
+            "job"
+          ],
+          "preserveCategories": true
+        },
+        "status_*": {
+          "derivedFrom": [
+            "status"
+          ],
+          "preserveCategories": true
+        }
+      },
+      "step": "A3_one_hot_encode",
+      "inputArtifacts": [
+        "D3_GermanNoPersonalStatus"
+      ],
+      "outputArtifacts": [
+        "D4_GermanEncoded"
+      ]
+    },
+    "A4_split_train_test_policy": {
+      "operatorType": "RED",
+      "contributorGranularity": "record",
+      "step": "A4_split_train_test",
+      "inputArtifacts": [
+        "D4_GermanEncoded"
+      ],
+      "outputArtifacts": [
+        "D5_GermanTrainDataset",
+        "D6_GermanTestDataset"
+      ]
+    },
+    "A5_train_classifier_policy": {
+      "operatorType": "LEARN",
+      "contributorGranularity": "record_and_attribute",
+      "target": "label",
+      "features": [
+        "*"
+      ],
+      "modelExposureMapping": {
+        "financial_sensitive": "model_exposed_to_financial_sensitive_data",
+        "creditworthiness_sensitive": "model_exposed_to_financial_sensitive_data",
+        "employment_sensitive": "model_exposed_to_employment_data",
+        "protected_attribute": "model_exposed_to_protected_attributes",
+        "gender": "model_exposed_to_protected_attributes",
+        "nationality_sensitive": "model_exposed_to_protected_attributes",
+        "sensitive_personal_data": "model_exposed_to_sensitive_personal_data",
+        "personal_data": "model_exposed_to_personal_data"
+      },
+      "erasureRewrite": {
+        "delete_on_request": "retrain_or_review_on_erasure"
+      },
+      "step": "A5_train_classifier",
+      "inputArtifacts": [
+        "D5_GermanTrainDataset"
+      ],
+      "outputArtifacts": [
+        "M1_GermanCreditClassifier"
+      ],
+      "modelAccessRoles": [
+        "DS",
+        "AU",
+        "DPO",
+        "DomainExpert"
+      ]
+    },
+    "A6_evaluate_classifier_policy": {
+      "operatorType": "EVAL",
+      "contributorGranularity": "model_and_test",
+      "step": "A6_evaluate_classifier",
+      "inputArtifacts": [
+        "M1_GermanCreditClassifier",
+        "D6_GermanTestDataset"
+      ],
+      "outputArtifacts": [
+        "E1_GermanAccuracy"
+      ],
+      "mintingRules": [
+        {
+          "condition": "always",
+          "addCategories": [
+            "performance_on_sensitive_task"
+          ],
+          "description": "Evaluation artifact category added by policy."
+        }
+      ],
+      "globalParameters": {
+        "addErasure": [
+          "recompute_on_erasure"
+        ]
+      }
+    }
+  }
+}

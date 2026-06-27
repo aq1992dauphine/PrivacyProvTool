@@ -1,0 +1,211 @@
+{
+  "operation_policies": {
+    "B0_select_columns_policy": {
+      "operatorType": "RED",
+      "contributorGranularity": "cell",
+      "selectedAttributes": [
+        "age",
+        "c_charge_degree",
+        "race",
+        "sex",
+        "priors_count",
+        "days_b_screening_arrest",
+        "two_year_recid",
+        "c_jail_in",
+        "c_jail_out"
+      ],
+      "step": "B0_select_columns",
+      "inputArtifacts": [
+        "D0_COMPASRaw"
+      ],
+      "outputArtifacts": [
+        "D1_COMPASSelected"
+      ]
+    },
+    "B1_drop_missing_policy": {
+      "operatorType": "RED",
+      "contributorGranularity": "record",
+      "step": "B1_drop_missing",
+      "inputArtifacts": [
+        "D1_COMPASSelected"
+      ],
+      "outputArtifacts": [
+        "D2_COMPASNoMissing"
+      ]
+    },
+    "B2_binary_race_policy": {
+      "operatorType": "TR",
+      "contributorGranularity": "cell",
+      "transformations": {
+        "race": {
+          "derivedFrom": [
+            "race"
+          ],
+          "preserveCategories": true
+        }
+      },
+      "step": "B2_binary_race",
+      "inputArtifacts": [
+        "D2_COMPASNoMissing"
+      ],
+      "outputArtifacts": [
+        "D3_COMPASRaceBinary"
+      ]
+    },
+    "B3_label_transform_policy": {
+      "operatorType": "TR",
+      "contributorGranularity": "cell",
+      "transformations": {
+        "label": {
+          "derivedFrom": [
+            "two_year_recid"
+          ],
+          "preserveCategories": true
+        }
+      },
+      "step": "B3_label_transform",
+      "inputArtifacts": [
+        "D3_COMPASRaceBinary"
+      ],
+      "outputArtifacts": [
+        "D4_COMPASLabelTransformed"
+      ]
+    },
+    "B4_create_jailtime_policy": {
+      "operatorType": "TR",
+      "contributorGranularity": "cell",
+      "transformations": {
+        "jailtime": {
+          "derivedFrom": [
+            "c_jail_in",
+            "c_jail_out"
+          ],
+          "preserveCategories": true
+        }
+      },
+      "step": "B4_create_jailtime",
+      "inputArtifacts": [
+        "D4_COMPASLabelTransformed"
+      ],
+      "outputArtifacts": [
+        "D5_COMPASJailtime"
+      ]
+    },
+    "B5_drop_jail_dates_policy": {
+      "operatorType": "RED",
+      "contributorGranularity": "cell",
+      "step": "B5_drop_jail_dates",
+      "inputArtifacts": [
+        "D5_COMPASJailtime"
+      ],
+      "outputArtifacts": [
+        "D6_COMPASNoJailDates"
+      ],
+      "riskRemovalRules": [
+        {
+          "condition": "projection_or_attribute_removal",
+          "removeCategories": [
+            "temporal_quasi_identifier"
+          ],
+          "description": "Converted from top-level removeCategories for the real PrivacyProv policy schema."
+        }
+      ]
+    },
+    "B6_charge_degree_binary_policy": {
+      "operatorType": "TR",
+      "contributorGranularity": "cell",
+      "transformations": {
+        "c_charge_degree": {
+          "derivedFrom": [
+            "c_charge_degree"
+          ],
+          "preserveCategories": true
+        },
+        "sex": {
+          "derivedFrom": [
+            "sex"
+          ],
+          "preserveCategories": true
+        }
+      },
+      "step": "B6_charge_degree_binary",
+      "inputArtifacts": [
+        "D6_COMPASNoJailDates"
+      ],
+      "outputArtifacts": [
+        "D7_COMPASFinal"
+      ]
+    },
+    "B7_split_train_test_policy": {
+      "operatorType": "RED",
+      "contributorGranularity": "record",
+      "step": "B7_split_train_test",
+      "inputArtifacts": [
+        "D7_COMPASFinal"
+      ],
+      "outputArtifacts": [
+        "D8_COMPASTrainDataset",
+        "D9_COMPASTestDataset"
+      ]
+    },
+    "B8_train_classifier_policy": {
+      "operatorType": "LEARN",
+      "contributorGranularity": "record_and_attribute",
+      "target": "label",
+      "features": [
+        "*"
+      ],
+      "modelExposureMapping": {
+        "criminal_justice_sensitive": "model_exposed_to_criminal_justice_sensitive_data",
+        "behavioural_sensitive": "model_exposed_to_behavioural_sensitive_label",
+        "protected_attribute": "model_exposed_to_protected_attributes",
+        "race_ethnicity": "model_exposed_to_protected_attributes",
+        "gender": "model_exposed_to_protected_attributes",
+        "sensitive_personal_data": "model_exposed_to_sensitive_personal_data",
+        "personal_data": "model_exposed_to_personal_data"
+      },
+      "erasureRewrite": {
+        "delete_on_request": "retrain_or_review_on_erasure"
+      },
+      "step": "B8_train_classifier",
+      "inputArtifacts": [
+        "D8_COMPASTrainDataset"
+      ],
+      "outputArtifacts": [
+        "M1_COMPASRecidivismClassifier"
+      ],
+      "modelAccessRoles": [
+        "DS",
+        "AU",
+        "DPO",
+        "DomainExpert"
+      ]
+    },
+    "B9_evaluate_classifier_policy": {
+      "operatorType": "EVAL",
+      "contributorGranularity": "model_and_test",
+      "step": "B9_evaluate_classifier",
+      "inputArtifacts": [
+        "M1_COMPASRecidivismClassifier",
+        "D9_COMPASTestDataset"
+      ],
+      "outputArtifacts": [
+        "E1_COMPASAccuracy"
+      ],
+      "mintingRules": [
+        {
+          "condition": "always",
+          "addCategories": [
+            "performance_on_sensitive_task"
+          ],
+          "description": "Evaluation artifact category added by policy."
+        }
+      ],
+      "globalParameters": {
+        "addErasure": [
+          "recompute_on_erasure"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,281 @@
+{
+  "roles": [
+    "DS",
+    "AU",
+    "DPO",
+    "DomainExpert"
+  ],
+  "erasures": [
+    "delete_on_request",
+    "retention_5y",
+    "retrain_or_review_on_erasure",
+    "recompute_on_erasure"
+  ],
+  "category_implications": {
+    "direct_identifier": [
+      "identifier"
+    ],
+    "pseudonymous_identifier": [
+      "identifier"
+    ],
+    "quasi_identifier": [
+      "personal_data"
+    ],
+    "demographic": [
+      "personal_data"
+    ],
+    "protected_attribute": [
+      "sensitive_personal_data"
+    ],
+    "health": [
+      "sensitive_personal_data"
+    ],
+    "behavioural_sensitive": [
+      "sensitive_personal_data"
+    ],
+    "income_sensitive": [
+      "sensitive_personal_data"
+    ],
+    "criminal_justice_sensitive": [
+      "sensitive_personal_data"
+    ],
+    "financial_sensitive": [
+      "sensitive_personal_data"
+    ],
+    "employment_sensitive": [
+      "personal_data"
+    ],
+    "education_sensitive": [
+      "personal_data"
+    ],
+    "nationality_sensitive": [
+      "sensitive_personal_data"
+    ],
+    "race_ethnicity": [
+      "sensitive_personal_data"
+    ],
+    "gender": [
+      "protected_attribute"
+    ],
+    "model_exposed_to_sensitive_personal_data": [
+      "model_exposure"
+    ],
+    "model_exposed_to_financial_sensitive_data": [
+      "model_exposure"
+    ],
+    "model_exposed_to_criminal_justice_sensitive_data": [
+      "model_exposure"
+    ],
+    "model_exposed_to_income_sensitive_label": [
+      "model_exposure"
+    ],
+    "model_exposed_to_protected_attributes": [
+      "model_exposure"
+    ]
+  },
+  "usages": [
+    "research",
+    "income_model_development"
+  ],
+  "dataset_annotations": {
+    "D0_CensusRaw": {
+      "U": [
+        "research",
+        "income_model_development"
+      ],
+      "R": [
+        "delete_on_request",
+        "retention_5y"
+      ],
+      "A": [
+        "DS",
+        "AU",
+        "DPO"
+      ],
+      "granularity": "dataset"
+    }
+  },
+  "record_default_annotations": {
+    "D0_CensusRaw": {
+      "U": [
+        "research",
+        "income_model_development"
+      ],
+      "R": [
+        "delete_on_request",
+        "retention_5y"
+      ],
+      "A": [
+        "DS",
+        "AU",
+        "DPO"
+      ],
+      "granularity": "record"
+    }
+  },
+  "attribute_annotations": {
+    "D0_CensusRaw": {
+      "age": {
+        "C": [
+          "quasi_identifier"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "workclass": {
+        "C": [
+          "employment_sensitive",
+          "socio_economic"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "fnlwgt": {
+        "C": [
+          "technical_weight"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "education": {
+        "C": [
+          "education_sensitive",
+          "socio_economic"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "education-num": {
+        "C": [
+          "education_sensitive",
+          "socio_economic"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "marital-status": {
+        "C": [
+          "demographic",
+          "quasi_identifier"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "occupation": {
+        "C": [
+          "employment_sensitive",
+          "socio_economic"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "relationship": {
+        "C": [
+          "demographic",
+          "quasi_identifier"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "race": {
+        "C": [
+          "race_ethnicity",
+          "protected_attribute"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "sex": {
+        "C": [
+          "gender",
+          "protected_attribute"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "capital-gain": {
+        "C": [
+          "financial_sensitive",
+          "income_related"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "capital-loss": {
+        "C": [
+          "financial_sensitive",
+          "income_related"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "hours-per-week": {
+        "C": [
+          "employment_sensitive"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "native-country": {
+        "C": [
+          "nationality_sensitive",
+          "quasi_identifier"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "label": {
+        "C": [
+          "income_sensitive"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      }
+    }
+  }
+}

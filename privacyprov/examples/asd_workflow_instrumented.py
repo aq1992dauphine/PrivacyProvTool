@@ -119,7 +119,7 @@ def main() -> None:
     ctx.register_metric("E1_accuracy", "accuracy", acc, split="test")
 
     # Component 2: load and materialise the initial privacy ontology + manual annotations.
-    config_dir = Path(__file__).resolve().parents[1] / "config"
+    config_dir = Path(__file__).resolve().parents[1] / "config" / "ASD"
     config_path = config_dir / "asd_privacy_annotations.json"
     privacy_config = PrivacyConfigLoader.load(config_path)
     annotation_summary = InitialPrivacyAnnotator(ctx.graph, privacy_config).apply()

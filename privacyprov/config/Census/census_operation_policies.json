@@ -1,0 +1,254 @@
+{
+  "operation_policies": {
+    "C0_strip_whitespace_policy": {
+      "operatorType": "TR",
+      "contributorGranularity": "cell",
+      "transformations": {
+        "workclass": {
+          "derivedFrom": [
+            "workclass"
+          ],
+          "preserveCategories": true
+        },
+        "education": {
+          "derivedFrom": [
+            "education"
+          ],
+          "preserveCategories": true
+        },
+        "marital-status": {
+          "derivedFrom": [
+            "marital-status"
+          ],
+          "preserveCategories": true
+        },
+        "occupation": {
+          "derivedFrom": [
+            "occupation"
+          ],
+          "preserveCategories": true
+        },
+        "relationship": {
+          "derivedFrom": [
+            "relationship"
+          ],
+          "preserveCategories": true
+        },
+        "race": {
+          "derivedFrom": [
+            "race"
+          ],
+          "preserveCategories": true
+        },
+        "sex": {
+          "derivedFrom": [
+            "sex"
+          ],
+          "preserveCategories": true
+        },
+        "native-country": {
+          "derivedFrom": [
+            "native-country"
+          ],
+          "preserveCategories": true
+        },
+        "label": {
+          "derivedFrom": [
+            "label"
+          ],
+          "preserveCategories": true
+        }
+      },
+      "step": "C0_strip_whitespace",
+      "inputArtifacts": [
+        "D0_CensusRaw"
+      ],
+      "outputArtifacts": [
+        "D1_CensusStripped"
+      ]
+    },
+    "C1_replace_missing_policy": {
+      "operatorType": "TR",
+      "contributorGranularity": "cell",
+      "transformations": {},
+      "step": "C1_replace_missing",
+      "inputArtifacts": [
+        "D1_CensusStripped"
+      ],
+      "outputArtifacts": [
+        "D2_CensusMissingReplaced"
+      ]
+    },
+    "C2_one_hot_encode_policy": {
+      "operatorType": "TR",
+      "contributorGranularity": "cell",
+      "transformations": {
+        "workclass_*": {
+          "derivedFrom": [
+            "workclass"
+          ],
+          "preserveCategories": true
+        },
+        "education_*": {
+          "derivedFrom": [
+            "education"
+          ],
+          "preserveCategories": true
+        },
+        "marital-status_*": {
+          "derivedFrom": [
+            "marital-status"
+          ],
+          "preserveCategories": true
+        },
+        "occupation_*": {
+          "derivedFrom": [
+            "occupation"
+          ],
+          "preserveCategories": true
+        },
+        "relationship_*": {
+          "derivedFrom": [
+            "relationship"
+          ],
+          "preserveCategories": true
+        },
+        "race_*": {
+          "derivedFrom": [
+            "race"
+          ],
+          "preserveCategories": true
+        },
+        "native-country_*": {
+          "derivedFrom": [
+            "native-country"
+          ],
+          "preserveCategories": true
+        }
+      },
+      "step": "C2_one_hot_encode",
+      "inputArtifacts": [
+        "D2_CensusMissingReplaced"
+      ],
+      "outputArtifacts": [
+        "D3_CensusEncoded"
+      ]
+    },
+    "C3_binary_transform_policy": {
+      "operatorType": "TR",
+      "contributorGranularity": "cell",
+      "transformations": {
+        "sex": {
+          "derivedFrom": [
+            "sex"
+          ],
+          "preserveCategories": true
+        },
+        "label": {
+          "derivedFrom": [
+            "label"
+          ],
+          "preserveCategories": true
+        }
+      },
+      "step": "C3_binary_transform",
+      "inputArtifacts": [
+        "D3_CensusEncoded"
+      ],
+      "outputArtifacts": [
+        "D4_CensusBinary"
+      ]
+    },
+    "C4_drop_weight_policy": {
+      "operatorType": "RED",
+      "contributorGranularity": "cell",
+      "step": "C4_drop_weight",
+      "inputArtifacts": [
+        "D4_CensusBinary"
+      ],
+      "outputArtifacts": [
+        "D5_CensusModellingDataset"
+      ],
+      "riskRemovalRules": [
+        {
+          "condition": "projection_or_attribute_removal",
+          "removeCategories": [
+            "technical_weight"
+          ],
+          "description": "Converted from top-level removeCategories for the real PrivacyProv policy schema."
+        }
+      ]
+    },
+    "C5_split_train_test_policy": {
+      "operatorType": "RED",
+      "contributorGranularity": "record",
+      "step": "C5_split_train_test",
+      "inputArtifacts": [
+        "D5_CensusModellingDataset"
+      ],
+      "outputArtifacts": [
+        "D6_CensusTrainDataset",
+        "D7_CensusTestDataset"
+      ]
+    },
+    "C6_train_classifier_policy": {
+      "operatorType": "LEARN",
+      "contributorGranularity": "record_and_attribute",
+      "target": "label",
+      "features": [
+        "*"
+      ],
+      "modelExposureMapping": {
+        "financial_sensitive": "model_exposed_to_financial_sensitive_data",
+        "income_sensitive": "model_exposed_to_income_sensitive_label",
+        "protected_attribute": "model_exposed_to_protected_attributes",
+        "race_ethnicity": "model_exposed_to_protected_attributes",
+        "gender": "model_exposed_to_protected_attributes",
+        "sensitive_personal_data": "model_exposed_to_sensitive_personal_data",
+        "personal_data": "model_exposed_to_personal_data"
+      },
+      "erasureRewrite": {
+        "delete_on_request": "retrain_or_review_on_erasure"
+      },
+      "step": "C6_train_classifier",
+      "inputArtifacts": [
+        "D6_CensusTrainDataset"
+      ],
+      "outputArtifacts": [
+        "M1_CensusIncomeClassifier"
+      ],
+      "modelAccessRoles": [
+        "DS",
+        "AU",
+        "DPO",
+        "DomainExpert"
+      ]
+    },
+    "C7_evaluate_classifier_policy": {
+      "operatorType": "EVAL",
+      "contributorGranularity": "model_and_test",
+      "step": "C7_evaluate_classifier",
+      "inputArtifacts": [
+        "M1_CensusIncomeClassifier",
+        "D7_CensusTestDataset"
+      ],
+      "outputArtifacts": [
+        "E1_CensusAccuracy"
+      ],
+      "mintingRules": [
+        {
+          "condition": "always",
+          "addCategories": [
+            "performance_on_sensitive_task"
+          ],
+          "description": "Evaluation artifact category added by policy."
+        }
+      ],
+      "globalParameters": {
+        "addErasure": [
+          "recompute_on_erasure"
+        ]
+      }
+    }
+  }
+}

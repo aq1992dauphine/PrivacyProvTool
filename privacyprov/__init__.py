@@ -12,7 +12,7 @@ from .privacy import (
 __all__ = [
     "WorkflowContext",
     "OperatorType",
-    "ArtifactType",
+    "ArtifactType", 
     "PrivacyConfigLoader",
     "InitialPrivacyAnnotator",
     "PrivacyOntology",

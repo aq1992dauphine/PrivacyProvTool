@@ -63,7 +63,7 @@ class OperationPolicySpec:
     def from_mapping(cls, policy_id: str, data: Mapping[str, Any]) -> "OperationPolicySpec":
         return cls(
             policy_id=str(policy_id),
-            step=data.get("step"),
+            step=data.get("step") or data.get("step_name") or data.get("stepName"),
             operatorType=str(data.get("operatorType", "UNKNOWN")),
             contributorGranularity=str(data.get("contributorGranularity", "artifact")),
             inputArtifacts=_as_list(data.get("inputArtifacts")),

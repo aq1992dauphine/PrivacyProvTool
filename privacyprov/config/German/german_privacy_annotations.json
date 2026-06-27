@@ -1,0 +1,343 @@
+{
+  "roles": [
+    "DS",
+    "AU",
+    "DPO",
+    "DomainExpert"
+  ],
+  "erasures": [
+    "delete_on_request",
+    "retention_5y",
+    "retrain_or_review_on_erasure",
+    "recompute_on_erasure"
+  ],
+  "category_implications": {
+    "direct_identifier": [
+      "identifier"
+    ],
+    "pseudonymous_identifier": [
+      "identifier"
+    ],
+    "quasi_identifier": [
+      "personal_data"
+    ],
+    "demographic": [
+      "personal_data"
+    ],
+    "protected_attribute": [
+      "sensitive_personal_data"
+    ],
+    "health": [
+      "sensitive_personal_data"
+    ],
+    "behavioural_sensitive": [
+      "sensitive_personal_data"
+    ],
+    "income_sensitive": [
+      "sensitive_personal_data"
+    ],
+    "criminal_justice_sensitive": [
+      "sensitive_personal_data"
+    ],
+    "financial_sensitive": [
+      "sensitive_personal_data"
+    ],
+    "employment_sensitive": [
+      "personal_data"
+    ],
+    "education_sensitive": [
+      "personal_data"
+    ],
+    "nationality_sensitive": [
+      "sensitive_personal_data"
+    ],
+    "race_ethnicity": [
+      "sensitive_personal_data"
+    ],
+    "gender": [
+      "protected_attribute"
+    ],
+    "model_exposed_to_sensitive_personal_data": [
+      "model_exposure"
+    ],
+    "model_exposed_to_financial_sensitive_data": [
+      "model_exposure"
+    ],
+    "model_exposed_to_criminal_justice_sensitive_data": [
+      "model_exposure"
+    ],
+    "model_exposed_to_income_sensitive_label": [
+      "model_exposure"
+    ],
+    "model_exposed_to_protected_attributes": [
+      "model_exposure"
+    ]
+  },
+  "usages": [
+    "research",
+    "credit_risk_research"
+  ],
+  "dataset_annotations": {
+    "D0_GermanRaw": {
+      "U": [
+        "research",
+        "credit_risk_research"
+      ],
+      "R": [
+        "delete_on_request",
+        "retention_5y"
+      ],
+      "A": [
+        "DS",
+        "AU",
+        "DPO"
+      ],
+      "granularity": "dataset"
+    }
+  },
+  "record_default_annotations": {
+    "D0_GermanRaw": {
+      "U": [
+        "research",
+        "credit_risk_research"
+      ],
+      "R": [
+        "delete_on_request",
+        "retention_5y"
+      ],
+      "A": [
+        "DS",
+        "AU",
+        "DPO"
+      ],
+      "granularity": "record"
+    }
+  },
+  "attribute_annotations": {
+    "D0_GermanRaw": {
+      "checking": {
+        "C": [
+          "financial_sensitive"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "duration": {
+        "C": [
+          "financial_sensitive"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "credit_history": {
+        "C": [
+          "financial_sensitive",
+          "credit_history_sensitive"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "purpose": {
+        "C": [
+          "financial_sensitive",
+          "loan_purpose"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "amount": {
+        "C": [
+          "financial_sensitive"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "savings": {
+        "C": [
+          "financial_sensitive"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "employment": {
+        "C": [
+          "employment_sensitive",
+          "socio_economic"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "installment_rate": {
+        "C": [
+          "financial_sensitive"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "personal_status": {
+        "C": [
+          "demographic",
+          "gender",
+          "protected_attribute",
+          "quasi_identifier"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "other_debtors": {
+        "C": [
+          "financial_sensitive"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "residence_since": {
+        "C": [
+          "quasi_identifier"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "property": {
+        "C": [
+          "financial_sensitive",
+          "socio_economic"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "age": {
+        "C": [
+          "quasi_identifier"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "other_inst": {
+        "C": [
+          "financial_sensitive"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "housing": {
+        "C": [
+          "socio_economic",
+          "quasi_identifier"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "existing_credits": {
+        "C": [
+          "financial_sensitive"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "job": {
+        "C": [
+          "employment_sensitive",
+          "socio_economic"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "people_liable": {
+        "C": [
+          "demographic",
+          "quasi_identifier"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "phone": {
+        "C": [
+          "contact_indicator",
+          "quasi_identifier"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "foreigner": {
+        "C": [
+          "nationality_sensitive",
+          "protected_attribute"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      },
+      "label": {
+        "C": [
+          "financial_sensitive",
+          "creditworthiness_sensitive"
+        ],
+        "A": [
+          "DS",
+          "AU",
+          "DPO"
+        ]
+      }
+    }
+  }
+}
